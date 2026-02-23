@@ -89,6 +89,23 @@
               "innovorder/ouverture-site",
               "innovorder/processus"
             ]
+          },
+          {
+            "group": "Documentation officielle",
+            "pages": [
+              "doc-innovorder/documentation"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "PI Electronique",
+        "groups": [
+          {
+            "group": "Documentation officielle",
+            "pages": [
+              "doc-pi/documentation"
+            ]
           }
         ]
       }

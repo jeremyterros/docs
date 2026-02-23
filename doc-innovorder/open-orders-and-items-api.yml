@@ -1,0 +1,824 @@
+openapi: 3.0.3
+info:
+    description: Describe orders and items at Innovorder
+    version: 1.0.0
+    title: Orders and Items API
+    contact:
+        email: support@innovorder.fr
+servers:
+    - url: http://localhost:8080
+    - url: https://{environment}.innovorder.io
+      variables:
+          environment:
+              default: api
+              enum:
+                  - api
+                  - api-preprod
+                  - api-dev
+tags:
+    - name: Orders
+    - name: Items
+paths:
+    /v1/orders:
+        get:
+            tags:
+                - Orders
+            summary: get all orders from all channels
+            operationId: getAllOrders
+            parameters:
+                - name: customerId
+                  in: query
+                  description: Allows you to retrieve all the orders for a given customerId
+                  required: true
+                  schema:
+                      type: string
+                - name: brandId
+                  in: query
+                  description: Allows you to retrieve all the orders for a given brandId
+                  required: true
+                  schema:
+                      type: string
+                - name: restaurantIds
+                  in: query
+                  description: Allows you to retrieve all the orders for the N restaurantId like id1,id2,...
+                  required: true
+                  schema:
+                      type: string
+                - name: brandIds
+                  in: query
+                  description: Allows you to retrieve all the orders for the given brandIds
+                  required: true
+                  schema:
+                      type: string
+                - name: startDate
+                  in: query
+                  description: Allows you to retrieve all orders between startDate and endDate
+                  required: false
+                  schema:
+                      type: string
+                - name: endDate
+                  in: query
+                  description: Allows you to retrieve all orders between startDate and endDate
+                  required: false
+                  schema:
+                      type: string
+                - name: channelIds
+                  in: query
+                  description: Allows you to retrieve all the orders for the N channelId like id1,id2,...
+                  required: false
+                  schema:
+                      type: string
+                - name: status
+                  in: query
+                  description: Allows you to retrieve all the orders by status like status1,status2,...
+                  required: false
+                  schema:
+                      type: string
+                      enum:
+                          - VALIDATED
+                          - PAID
+                          - CANCELLED
+                - name: consumptionModeIds
+                  in: query
+                  description: Allows you to retrieve all the orders for the N consumptionModeId like id1,id2,...
+                  required: false
+                  schema:
+                      type: string
+                - name: customerName
+                  in: query
+                  description: Allows you to retrieve all the orders for a given name
+                  required: false
+                  schema:
+                      type: string
+                - name: badgeNumber
+                  in: query
+                  description: Allows you to retrieve all the orders for a given badge number
+                  required: false
+                  schema:
+                      type: string
+                - name: search
+                  in: query
+                  description: Allows you to retrieve all the orders matching with the given string. The search string can contain a part of the omnichannelOrderId.
+                  required: false
+                  schema:
+                      type: string
+                - name: phoneNumber
+                  in: query
+                  description: Allows you to retrieve all the orders from customer with given phone number.
+                  required: false
+                  schema:
+                      type: string
+                - name: restaurantName
+                  in: query
+                  description: Allows you to retrieve all the orders for a given restaurant name.
+                  required: false
+                  schema:
+                      type: string
+                - name: ticketNumber
+                  in: query
+                  description: Allows you to retrieve all the orders which have a ticket number which match with the given string. If ticket number is empty, try to match with daily order number.
+                  required: false
+                  schema:
+                      type: string
+                - name: ticketStartDate
+                  in: query
+                  description: Allows you to retrieve all orders between ticketStartDate and ticketEndDate
+                  required: false
+                  schema:
+                      type: string
+                - name: ticketEndDate
+                  in: query
+                  description: Allows you to retrieve all orders between ticketStartDate and ticketEndDate
+                  required: false
+                  schema:
+                      type: string
+                - name: totalPriceMin
+                  in: query
+                  description: Allows you to retrieve all orders with total price discounted with tax included between totalPriceMin and totalPriceMax
+                  required: false
+                  schema:
+                      type: number
+                - name: totalPriceMax
+                  in: query
+                  description: Allows you to retrieve all orders with total price discounted with tax included between totalPriceMin and totalPriceMax
+                  required: false
+                  schema:
+                      type: number
+                - name: turnoverMin
+                  in: query
+                  description: Allows you to retrieve all orders with turnover between turnoverMin and turnoverMax
+                  required: false
+                  schema:
+                      type: number
+                - name: turnoverMax
+                  in: query
+                  description: Allows you to retrieve all orders with turnover between turnoverMin and turnoverMax
+                  required: false
+                  schema:
+                      type: number
+                - name: limit
+                  in: query
+                  description: Allows you to retrieve a number of instances/rows, a value between 1 and 1000
+                  required: false
+                  schema:
+                      type: integer
+                      minimum: 1
+                      maximum: 1000
+                      default: 10
+                - name: offset
+                  in: query
+                  description: Allows you to Skip a number of instances/lines
+                  required: false
+                  schema:
+                      type: string
+                - name: order
+                  in: query
+                  description: Allows you to sort the result by ASC order for a given column name, add '-' at the beginning to get DESC sorting
+                  required: false
+                  schema:
+                      type: string
+                      enum:
+                          - customerId
+                          - restaurantId
+                          - brandId
+                          - dailyOrderId
+                          - startDate
+                          - seller
+                          - deviceId
+                          - deviceName
+                          - channelId
+                          - omnichannelOrderId
+                          - totalPriceDiscountedWithTaxExcluded
+                          - totalPriceDiscountedWithTaxIncluded
+                          - totalTax
+                          - status
+                          - lastUpdateDate
+                          - ticketNumber
+                          - consumptionMode
+                          - turnover
+                          - customerName
+                          - badgeNumber
+                          - phoneNumber
+                          - restaurantName
+            responses:
+                '200':
+                    description: search results matching criteria
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetOmnichannelOrderResponse'
+                '400':
+                    description: Bad request
+                '403':
+                    description: Unauthorized
+    /v1/orders/{orderId}:
+        get:
+            tags:
+                - Orders
+            summary: get one order from all channels with an order id
+            operationId: getOneOrderFromAllChannelsWithAnOrderId
+            parameters:
+                - name: orderId
+                  in: path
+                  description: The order Id.
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: search results matching criteria
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/OmnichannelOrder'
+                '400':
+                    description: Bad request
+                '403':
+                    description: Unauthorized
+    /v1/items:
+        get:
+            tags:
+                - Items
+            summary: get all items with SKU
+            operationId: getAllItems
+            parameters:
+                - name: brandId
+                  in: query
+                  description: The customer Id of the current business.
+                  required: true
+                  schema:
+                      type: string
+                - name: restaurantIds
+                  in: query
+                  description: The customer Id of the current business.
+                  required: true
+                  schema:
+                      type: string
+                - name: limit
+                  in: query
+                  description: Allows you to retrieve a number of instances/rows, a value between 10 and 10,000
+                  required: false
+                  schema:
+                      type: integer
+                      minimum: 10
+                      maximum: 10000
+                - name: offset
+                  in: query
+                  description: Allows you to Skip a number of instances/lines
+                  required: false
+                  schema:
+                      type: string
+                - name: order
+                  in: query
+                  description: Allows you to sort the result by ASC order for a given column name, add '-' at the beginning to get DESC sorting
+                  required: false
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: search results matching criteria
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetOmnichannelItemResponse'
+                '400':
+                    description: Bad request
+                '403':
+                    description: Unauthorized
+components:
+    schemas:
+        GetOmnichannelOrderResponse:
+            type: object
+            properties:
+                status:
+                    type: integer
+                    format: int32
+                code:
+                    type: string
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/OmnichannelOrderWithCount'
+        OmnichannelOrderWithCount:
+            type: object
+            properties:
+                count:
+                    type: integer
+                    format: int32
+                omnichannelOrders:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/OmnichannelOrder'
+        OmnichannelOrder:
+            additionalProperties: false
+            type: object
+            properties:
+                omnichannelOrderId:
+                    description: The unique identifier of the order
+                    type: string
+                brandId:
+                    description: The unique identifier of the brand.
+                    type: number
+                consumptionModeId:
+                    description: the mode of consumption (on site, to take away, delivery, etc...)
+                    type: number
+                    enum: [1, 2, 3, 4]
+                    x-enumNames: [MODE_DELIVERY, MODE_TAKE_AWAY, MODE_SIT_IN, MODE_DRIVE]
+                currency:
+                    description: By default = EUR
+                    type: string
+                customerId:
+                    description: The unique identifier of the customer
+                    type: number
+                dailyOrderId:
+                    description: The order number on the customer's ticket
+                    type: number
+                deviceId:
+                    description: The unique identifier of the cash register
+                    type: string
+                deviceName:
+                    description: The name given to the cash register in the Innovorder BO
+                    type: string
+                discounts:
+                    description: The promotions applied to the order
+                    items:
+                        $ref: '#/components/schemas/Discount'
+                    type: array
+                entranceFees:
+                    description: the admission table in the broad sense (either admission or fee)
+                    items:
+                        $ref: '#/components/schemas/EntranceFee'
+                    type: array
+                fees:
+                    description: The fees including tax applied (delivery fees, service fees, etc...)
+                    items:
+                        $ref: '#/components/schemas/Fee'
+                    type: array
+                grants:
+                    description: The grants
+                    items:
+                        $ref: '#/components/schemas/Grant'
+                    type: array
+                pricingRule:
+                    description: Pricing rule
+                    type: object
+                    properties:
+                        code:
+                            type: string
+                        applyScope:
+                            type: array
+                            items:
+                                type: string
+                loyaltyPrograms:
+                    description: The loyalty programs
+                    items:
+                        $ref: '#/components/schemas/loyaltyPrograms'
+                    type: array
+                items:
+                    description: The products of the order
+                    items:
+                        $ref: '#/components/schemas/Item'
+                    type: array
+                numberOfGuests:
+                    description: The number of place settings in the order
+                    type: number
+                payments:
+                    description: The payments of the order
+                    items:
+                        $ref: '#/components/schemas/Payment'
+                    type: array
+                restaurantId:
+                    description: The unique identifier of the restaurant
+                    type: number
+                externalId:
+                    type: string
+                seller:
+                    description: the name of the seller in the cash register
+                    type: string
+                channelId:
+                    description: The control channel
+                    type: number
+                    enum: [1, 2, 5]
+                    x-enumNames: [KIOSK, WEB, POS]
+                startDate:
+                    description: The opening date of the order
+                    type: string
+                expectedDate:
+                    description: Expected delivery date
+                    type: string
+                businessYear:
+                    description: The business year of the order
+                    type: number
+                businessMonth:
+                    description: The business month of the order
+                    type: number
+                businessDay:
+                    description: The business dat of the order
+                    type: number
+                lastUpdateDate:
+                    description: The last update date of the order
+                    type: string
+                status:
+                    description: The status of the order
+                    type: string
+                    enum:
+                        - VALIDATED
+                        - PAID
+                        - CANCELLED
+                webPaymentStatus:
+                    description: The status of the web order
+                    type: string
+                    enum:
+                        - PAYMENT_PENDING
+                        - PAYMENT_OK
+                        - PAYMENT_REFUSED
+                        - PAYMENT_REFUNDED
+                tags:
+                    description: The tags associated with the order
+                    items:
+                        $ref: '#/components/schemas/Tag'
+                    type: array
+                taxes:
+                    description: The taxes associated with the order
+                    items:
+                        $ref: '#/components/schemas/Tax'
+                    type: array
+                totalPriceDiscountedWithTaxExcluded:
+                    description: The total ticket HT
+                    type: number
+                totalAmountFree:
+                    description: The total of free amounts
+                    type: number
+                totalItemFree:
+                    description: The total of free items
+                    type: number
+                totalPriceDiscountedWithTaxIncluded:
+                    description: The total ticket TTC
+                    type: number
+                totalDiscount:
+                    description: The total discount
+                    type: number
+                totalTax:
+                    description: The amount of VAT
+                    type: number
+                turnover:
+                    description: The turnover
+                    type: number
+                marketplaceStoreName:
+                    description: the store name of the marketplace
+                    type: string
+                service:
+                    description: service
+                    type: number
+                discountEmployeeName:
+                    description: The name of the employee
+                    type: string
+                discountCode:
+                    description: The discount code
+                    type: string
+                cancellationReason:
+                    description: The reason of cancellation
+                    type: string
+                cancellationReasonDescription:
+                    description: The description of the reason of cancellation
+                    type: string
+                totalAmountCancelled:
+                    description: The total of cancelled amounts
+                    type: number
+                totalItemCancelled:
+                    description: The total of cancelled items
+                    type: number
+                tableName:
+                    description: The name of the table
+                    type: string
+                ticketNumber:
+                    description: The ticket number
+                    type: string
+                comment:
+                    description: The comment of the order
+                    type: string
+                isCancellable:
+                    description: The order can be cancelled
+                    type: boolean
+                isRefundable:
+                    description: The order can be refunded
+                    type: boolean
+                customer:
+                    description: The customer informations
+                    $ref: '#/components/schemas/Customer'
+                restaurant:
+                    description: The restaurant informations
+                    type: object
+                    properties:
+                        name:
+                            description: Restaurant name
+                            type: string
+                        externalId:
+                            description: Restaurant external id
+                            type: string
+                        address:
+                            description: Restaurant address infos
+                            $ref: '#/components/schemas/Address'
+                deliveryAddress:
+                    description: The customer delivery address
+                    type: object
+                    properties:
+                        locality:
+                            type: string
+                        route:
+                            type: string
+                        postalCode:
+                            type: string
+                        streetNumber:
+                            type: string
+                        apartmentNumber:
+                            type: string
+                        digicode:
+                            type: string
+                        phone:
+                            type: string
+                        additionalInfo:
+                            type: string
+                photos:
+                    description: The photos of the order
+                    items:
+                        $ref: '#/components/schemas/Photo'
+                    type: array
+
+        Discount:
+            additionalProperties: false
+            type: object
+            properties:
+                name:
+                    description: The name of the discount type (promo code, etc...)
+                    type: string
+                value:
+                    description: The value of the discount type (promo code, etc...)
+                    type: number
+        EntranceFee:
+            additionalProperties: false
+            properties:
+                code:
+                    type: number
+                ticketLabel:
+                    type: string
+                type:
+                    type: string
+                taxRate:
+                    type: number
+                amount:
+                    type: number
+            type: object
+        Fee:
+            additionalProperties: false
+            properties:
+                name:
+                    description: The name of the fee (delivery fees, service fees, etc...)
+                    type: string
+                taxRate:
+                    type: number
+                quantity:
+                    description: The quantity
+                    type: number
+                amount:
+                    description: The amount of the fee
+                    type: number
+            type: object
+        Grant:
+            additionalProperties: false
+            properties:
+                code:
+                    type: number
+                ticketLabel:
+                    type: string
+                amount:
+                    type: number
+            type: object
+        loyaltyPrograms:
+            additionalProperties: false
+            properties:
+                name:
+                    type: string
+                amount:
+                    type: number
+            type: object
+        Payment:
+            additionalProperties: false
+            properties:
+                type:
+                    type: string
+                amount:
+                    type: number
+                quantity:
+                    type: number
+            type: object
+        Tag:
+            additionalProperties: false
+            properties:
+                value:
+                    type: string
+            type: object
+        Tax:
+            additionalProperties: false
+            properties:
+                taxRate:
+                    type: number
+                totalTax:
+                    type: number
+                totalPriceDiscountedWithTaxIncluded:
+                    type: number
+                totalExclTax:
+                    type: number
+            type: object
+        Category:
+            additionalProperties: false
+            properties:
+                value:
+                    type: string
+            type: object
+        Item:
+            additionalProperties: false
+            properties:
+                itemId:
+                    description: The unique identifier of the item
+                    type: number
+                parentItemId:
+                    description: The identifier of the parent (case of the formula, otherwise NULL)
+                    type: number
+                skuValue:
+                    description: The SKU of the article (external article code)
+                    type: number
+                name:
+                    description: The name of the item
+                    type: string
+                quantity:
+                    description: The quantity of the item
+                    type: number
+                totalPriceWithTaxIncluded:
+                    description: The price incl. tax
+                    type: number
+                taxRate:
+                    description: The taxe rat
+                    type: number
+                free:
+                    description: It is free item or not
+                    type: boolean
+                status:
+                    description: Item status
+                    type: string
+                    enum:
+                        - PAID
+                        - CANCELLED
+                        - VALIDATED
+                itemType:
+                    description: description
+                    type: string
+                    enum:
+                        - PRODUCT
+                        - CUSTOMIZATION
+                discounted:
+                    description: is discounted
+                    type: boolean
+                reduced:
+                    description: is reduced
+                    type: boolean
+                service:
+                    type: number
+                totalPriceDiscounted:
+                    description: The total amount of discount applied to this item
+                    type: number
+                totalItemDiscounted:
+                    description: The number of discounted items
+                    type: number
+                cancelReason:
+                    description: The reason of cancellation
+                    type: string
+                deviceName:
+                    description: the name of the device
+                    type: string
+                deviceId:
+                    description: the id of the device
+                    type: string
+                categories:
+                    description: The categories of the products
+                    items:
+                        $ref: '#/components/schemas/Category'
+                    type: array
+                tags:
+                    items:
+                        $ref: '#/components/schemas/Tag'
+                    type: array
+            type: object
+        GetOmnichannelItemResponse:
+            type: object
+            properties:
+                status:
+                    type: integer
+                    format: int32
+                code:
+                    type: string
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/OmnichannelItemWithCount'
+        OmnichannelItemWithCount:
+            type: object
+            properties:
+                count:
+                    type: integer
+                    format: int32
+                omnichannelItems:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Item'
+        Address:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: full address
+                lat:
+                    type: number
+                    description: latitude
+                lng:
+                    type: number
+                    description: longitude
+                timeZoneId:
+                    type: string
+                locality:
+                    type: string
+                route:
+                    type: string
+                    description: Street
+                postalCode:
+                    type: string
+                    description: Zip code
+                streetNumber:
+                    type: string
+                administrativeAreaLevel1:
+                    type: string
+                administrativeAreaLevel2:
+                    type: string
+                country:
+                    type: string
+                googlePlaceId:
+                    type: string
+                phone:
+                    type: string
+        Customer:
+            type: object
+            properties:
+                phone:
+                    type: string
+                firstName:
+                    type: string
+                lastName:
+                    type: string
+                email:
+                    type: string
+                badgeNumber:
+                    type: string
+                student:
+                    type: object
+                    properties:
+                        studentId:
+                            type: number
+                        studentNumber:
+                            type: string
+                        class:
+                            type: string
+                        section:
+                            type: string
+                        subSection:
+                            type: string
+                        grantCode:
+                            type: string
+                        entranceFeeCode:
+                            type: string
+                        tariffCode:
+                            type: string
+                        barCode:
+                            type: string
+                        pricingRuleCode:
+                            type: string
+                        customerId:
+                            type: string
+                        accountPaymentType:
+                            type: string
+                        accountType:
+                            type: string
+                        accessFrom:
+                            type: string
+                        accessUntil:
+                            type: string
+        Photo:
+            type: object
+            properties:
+                omnichannelOrderPhotoId:
+                    type: number
+                omnichannelOrderId:
+                    type: string
+                mimeType:
+                    type: string
+                url:
+                    type: string
