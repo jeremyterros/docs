@@ -1,0 +1,44 @@
+---
+title: Inscription
+description: "Creation de compte utilisateur dans Serenest"
+icon: "pen-to-square"
+---
+
+Les utilisateurs peuvent creer leur compte Serenest de plusieurs manieres, selon leur statut PI Electronique ou Innovorder.
+
+<Info>
+  Aucune inscription n'est requise pour les utilisateurs qui s'authentifient via SSO. Tant que leur email et les informations de badge sont presents dans le systeme PI, le SSO recuperera automatiquement leurs informations et creera un compte pour eux — sans aucune action de leur part.
+</Info>
+
+## Connexion SSO
+
+- **Compte Serenest existant :** L'utilisateur se connecte avec son compte existant. Les informations de site et d'entreprise sont mises a jour. Si l'utilisateur a un role *manager* ou *admin*, l'acces est refuse. Le nom et prenom sont rafraichis, et le mot de passe est reinitialise car il n'est plus necessaire avec le SSO.
+- **Pas de compte Serenest existant :** Un nouveau compte est cree en utilisant les informations fournies par le SSO (nom, prenom, site, entreprise).
+- **Compte Pi avec email :** Le compte PI est recherche par email et le badge est mis a jour avec les informations de PI.
+- **Compte Pi avec badge :** Le compte PI est recherche par badge, l'email est recupere et le compte est lie.
+- **Compte Pi sans email :** Le compte est recupere via le numero de badge.
+- **Compte Pi sans badge et email :** Aucune action possible, car le compte n'existe pas dans le systeme PI.
+- **Compte Pi sans badge :** Ce cas n'existe pas, car tous les comptes PI ont un badge.
+
+## Sans SSO
+
+- **Inscription manuelle :** L'utilisateur clique sur *Creer un compte*. L'application verifie que le badge saisi correspond au site mentionne, puis lie automatiquement l'utilisateur a l'entreprise associee a ce site.
+
+## Informations sur les badges
+
+Lorsqu'un utilisateur tente de se connecter avec un **badge de site**, le systeme applique la logique suivante :
+
+<Steps>
+  <Step title="Aucun compte associe au badge">
+    Si aucun compte n'est trouve pour ce badge, un **nouveau compte est automatiquement cree**.
+  </Step>
+  <Step title="Compte associe au badge sans email">
+    Si un compte existe pour ce badge mais n'a pas d'email, l'**email saisi par l'utilisateur lui est attribue**, et ce compte devient son compte principal.
+  </Step>
+  <Step title="Compte associe au badge avec un email different">
+    Si un compte existe pour ce badge et est deja lie a un autre email, une **erreur est retournee au client**, indiquant que le badge est deja associe a un compte different.
+  </Step>
+  <Step title="Synchronisation du badge">
+    Si un badge est mis a jour dans PI et que l'email de l'utilisateur reste le meme, le nouveau badge se synchronisera automatiquement au profil de l'utilisateur lors de sa prochaine connexion, tant que l'ancien badge devient invalide.
+  </Step>
+</Steps>

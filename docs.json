@@ -1,68 +1,93 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "docs",
-  "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+  "name": "Serenest Documentation",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
   },
   "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#0D9373",
+    "light": "#07C983",
+    "dark": "#0D9373"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@serenest.fr"
+      }
+    ]
+  },
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Application",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Pour commencer",
+            "pages": ["introduction"]
+          },
+          {
+            "group": "Fonctionnalités de l'application",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "fonctionnalites/inscription",
+              "fonctionnalites/connexion",
+              "fonctionnalites/profil",
+              "fonctionnalites/menus",
+              "fonctionnalites/rechargement-badge",
+              "fonctionnalites/solde-historique",
+              "fonctionnalites/service-table",
+              "fonctionnalites/infos-restaurant",
+              "fonctionnalites/avis",
+              "fonctionnalites/reseaux-sociaux",
+              "fonctionnalites/notifications",
+              "fonctionnalites/rechargement-technique"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Onboarding utilisateurs",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "onboarding/pi",
+              "onboarding/innovorder"
             ]
           },
           {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
+            "group": "FAQ",
+            "pages": ["faq"]
+          }
+        ]
+      },
+      {
+        "tab": "SSO",
+        "groups": [
           {
-            "group": "AI tools",
+            "group": "Documentation SSO",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "sso/introduction",
+              "sso/fonctionnement",
+              "sso/configuration-back-office",
+              "sso/tableau-de-bord",
+              "sso/impact",
+              "sso/prerequis",
+              "sso/etapes-integration",
+              "sso/avantages",
+              "sso/conclusion",
+              "sso/liste-clients",
+              "sso/annexe-saml"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "Innovorder",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Innovorder",
             "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "innovorder/ouverture-site",
+              "innovorder/processus"
             ]
           }
         ]
@@ -71,52 +96,17 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "GitLab",
+          "icon": "gitlab",
+          "href": "https://gitlab.com/terros1/serenest"
         }
       ]
     }
   },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
-  },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "facebook": "https://www.facebook.com/serenest",
+      "instagram": "https://www.instagram.com/serenest"
     }
   }
 }

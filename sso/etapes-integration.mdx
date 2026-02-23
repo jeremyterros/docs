@@ -1,0 +1,30 @@
+---
+title: Etapes d'integration
+description: "Etapes detaillees pour l'integration du SSO avec Serenest"
+icon: "diagram-project"
+---
+
+## Configuration technique
+
+<Steps>
+  <Step title="Comptes de test">
+    Creer des **comptes de test** pour chaque service.
+  </Step>
+  <Step title="Configuration back-office">
+    Completer la configuration dans le back-office.
+  </Step>
+  <Step title="Import des metadonnees SAML">
+    Importer les metadonnees SAML du fournisseur d'identite.
+  </Step>
+</Steps>
+
+## Tests fonctionnels
+
+Une fois la configuration technique terminee, les tests suivants doivent etre effectues :
+
+| Test | Description |
+| --- | --- |
+| **Connexion automatique SSO** | Verifier que l'utilisateur est connecte automatiquement via le SSO |
+| **Rechargement de badge** | Tester avec un montant reel et un montant de 0 |
+| **Webview** | Verifier l'ouverture transparente sans connexion manuelle |
+| **Click & Collect** | Simuler une commande et un paiement |

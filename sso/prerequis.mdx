@@ -1,0 +1,32 @@
+---
+title: Prerequis
+description: "Prerequis pour la mise en place du SSO Serenest"
+icon: "list-check"
+---
+
+Pour activer le SSO et ses fonctionnalites associees, les elements suivants doivent etre fournis.
+
+## Documents a fournir
+
+<CardGroup cols={2}>
+  <Card title="Certificat .crt" icon="file-certificate">
+    Certificat X.509 pour l'authentification
+  </Card>
+  <Card title="Cle publique .pub" icon="key">
+    Cle publique pour la validation de signature
+  </Card>
+  <Card title="Metadonnees SAML" icon="file-code">
+    Fichier de metadonnees SAML du fournisseur d'identite
+  </Card>
+  <Card title="URLs de service" icon="link">
+    URLs pour le rechargement, le SSO Webview et le Click & Collect
+  </Card>
+</CardGroup>
+
+## Coordination technique
+
+Une coordination technique est necessaire entre :
+
+- **Serenest** (fournisseur de service)
+- **Le client** (entreprise utilisatrice)
+- **Les fournisseurs** (Adoria, Pi Electronique)

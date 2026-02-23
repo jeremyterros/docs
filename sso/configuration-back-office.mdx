@@ -1,0 +1,94 @@
+---
+title: Configuration du back-office
+description: "Configuration du SSO et des modules associes dans le back-office Serenest"
+icon: "sliders"
+---
+
+## Rechargement de badge
+
+Deux options de fournisseur : **Adoria** ou **Pi Electronique (PiPay)**.
+
+### Parametres requis
+
+- **URL de rechargement** : specifique a Adoria ou Pi
+- **URL racine Pi Electronique**
+- **Cle PiPay** : utilisee pour securiser les transactions
+
+### Etapes de configuration
+
+<Steps>
+  <Step title="Saisir l'URL et la cle">
+    Entrer l'URL et la cle dans le back-office.
+  </Step>
+  <Step title="Verifier la validite">
+    Verifier la validite de la cle aupres du fournisseur.
+  </Step>
+  <Step title="Tester le rechargement">
+    Effectuer des tests de rechargement de badge avec un compte de test.
+  </Step>
+</Steps>
+
+### Notes specifiques pour PiPay
+
+- Une transaction avec un montant de `0` inscrit l'utilisateur au service PiPay (automatique lors de la premiere connexion).
+- Endpoint implique : `envoi_epaiement_compte`.
+
+<Card title="Documentation technique PiPay" icon="book" href="https://gitlab.com/terros1/serenest/ias-bo-client/-/wikis/pi/pipay">
+  Wiki GitLab - PiPay
+</Card>
+
+---
+
+## Acces aux Webviews
+
+**Objectif** : integrer Serenest en tant que Webview dans une application existante avec authentification SSO.
+
+### Parametre a activer
+
+Activer **"Autoriser l'acces aux webviews"** dans le back-office.
+
+### Effets
+
+- Les utilisateurs accedent a Serenest depuis une autre application sans ressaisir leurs identifiants.
+- Cas d'usage typique : une application de restaurant ou d'entreprise qui integre Serenest.
+
+### Configuration
+
+<Steps>
+  <Step title="Activer le parametre">
+    Activer le parametre dans le back-office.
+  </Step>
+  <Step title="Tester l'ouverture">
+    Tester l'ouverture de Serenest depuis l'application hote.
+  </Step>
+</Steps>
+
+---
+
+## Acces au Click & Collect
+
+Deux types disponibles :
+
+| Type | Description |
+| --- | --- |
+| **Natif** | Integre directement dans Serenest |
+| **PiClick** | Propose par Pi Electronique |
+
+### Parametres a configurer
+
+- Selectionner le type (Natif ou PiClick)
+- Saisir les URLs/APIs associees
+
+### Etapes
+
+<Steps>
+  <Step title="Coordination technique">
+    Coordonner avec les equipes techniques du client pour les APIs.
+  </Step>
+  <Step title="Configuration back-office">
+    Configurer via le back-office.
+  </Step>
+  <Step title="Tests fonctionnels">
+    Tester les parcours utilisateur (selection, commande, paiement).
+  </Step>
+</Steps>

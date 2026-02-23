@@ -1,0 +1,105 @@
+---
+title: Annexe technique SAML
+description: "Documentation technique de l'integration SAML pour le SSO Serenest"
+icon: "code"
+---
+
+## Protocole utilise
+
+Serenest utilise **SAML 2.0** (Security Assertion Markup Language) comme standard pour la gestion des integrations SSO entre les fournisseurs d'identite tiers (IdP) et Serenest (fournisseur de service / SP).
+
+L'objectif est de permettre aux utilisateurs connectes a un systeme tiers (ex. une application d'entreprise) d'acceder aux Webviews Serenest **sans avoir a se reconnecter manuellement**.
+
+## Flux SAML detaille
+
+<Steps>
+  <Step title="Clic utilisateur">
+    L'utilisateur clique sur un bouton dans l'application tierce pour acceder a Serenest.
+  </Step>
+  <Step title="Requete au backend">
+    L'application tierce ouvre un navigateur interne et envoie une requete a son propre backend avec le **token d'authentification** de l'utilisateur et l'URL de destination souhaitee (parametre `url`).
+  </Step>
+  <Step title="Generation de la reponse SAML">
+    Le backend tiers genere une **reponse SAML**, l'encode en base64 et effectue une requete POST vers l'URL ACS de Serenest.
+  </Step>
+  <Step title="Verification par Serenest">
+    Serenest decode et verifie la **signature SAML** (via le certificat `.crt` fourni).
+  </Step>
+  <Step title="Extraction et token">
+    Serenest extrait les donnees utilisateur et genere un token d'acces interne.
+  </Step>
+  <Step title="Connexion automatique">
+    Ce token est envoye a l'application tierce, qui connecte automatiquement l'utilisateur.
+  </Step>
+</Steps>
+
+## URLs ACS
+
+| Environnement | URL |
+| --- | --- |
+| Pre-production | `https://preprod.app.serenest.fr/api/auth/sso/serenest/acs` |
+| Production | `https://app.serenest.fr/api/auth/sso/serenest/acs` |
+
+## Structure de la SAMLResponse
+
+Le payload de la SAMLResponse doit contenir les champs suivants :
+
+| Champ SAML | Description | Requis |
+| --- | --- | --- |
+| `emailaddress` | Adresse email de l'utilisateur | Oui |
+| `givenname` | Prenom | Oui |
+| `surname` | Nom de famille | Oui |
+| `name` | Nom complet | Oui |
+| `nameidentifier` | UUID du site tiers (lie a l'utilisateur) | Oui |
+| `badgenumber` | Numero de badge | Optionnel |
+| `destination` | URL cible dans Serenest (ex. `/menus`) | Oui |
+
+**Format attendu** : POST form-data avec un seul champ nomme `SAMLResponse` contenant le XML encode en Base64.
+
+## Certificats et securite
+
+Le tiers doit fournir a Serenest :
+
+- Un **certificat X.509** (`.crt`)
+- Une **cle publique** (`.pub`)
+
+Ces fichiers sont utilises pour :
+
+- Authentifier la source de la requete SAML
+- Valider la signature de la reponse
+- Optionnellement generer un fichier de metadonnees IdP
+
+## Flux de test
+
+<Steps>
+  <Step title="Partage du certificat">
+    Le tiers partage son certificat `.crt` avec l'equipe Serenest.
+  </Step>
+  <Step title="Configuration de l'IdP">
+    Serenest configure l'IdP dans son backend.
+  </Step>
+  <Step title="Echange de comptes de test">
+    Un **compte de test** est echange entre les deux parties.
+  </Step>
+  <Step title="Integration du bouton SSO">
+    Un bouton d'acces SSO est integre dans l'application tierce.
+  </Step>
+  <Step title="Tests en pre-production">
+    La reponse SAML est testee en environnement de pre-production.
+  </Step>
+  <Step title="Mise en production">
+    Une fois validee, la configuration est repliquee en production.
+  </Step>
+</Steps>
+
+## Bonnes pratiques et recommandations
+
+<Warning>
+  Ne pas creer automatiquement un compte dans Serenest si l'utilisateur n'existe pas (conformite RGPD).
+</Warning>
+
+- Verifier la **periode de validite** de la reponse SAML (via `NotOnOrAfter`).
+- En cas d'erreur, fournir des logs incluant :
+  - L'horodatage de la requete
+  - L'ID de la reponse SAML
+  - L'adresse email de l'utilisateur

@@ -1,0 +1,91 @@
+---
+title: Introduction
+description: "Documentation interne de l'application Serenest — réservée aux employés et partenaires"
+---
+
+<Note>
+  Documentation destinée exclusivement aux employés de Serenest et à leurs partenaires.
+</Note>
+
+## Qu'est-ce que Serenest ?
+
+**Serenest** est une application mobile tout-en-un conçue pour la **restauration collective**. Elle centralise les besoins des convives autour d'un compte unique lié à leur badge de restaurant :
+
+- **Rechargement de badge** — recharger son solde directement depuis l'application
+- **Click & Collect** — commander et payer à l'avance pour récupérer son repas
+- **Consultation des menus** — accéder aux menus du jour en temps réel
+- **Historique et solde** — suivre ses transactions et son solde restant
+- **Service à table** — commander et payer depuis sa table
+- **SSO** — connexion unique via le fournisseur d'identité de l'entreprise
+
+## Deux écosystèmes supportés
+
+Serenest s'intègre avec deux systèmes de gestion distincts selon les sites clients :
+
+| Écosystème | Rôle |
+| --- | --- |
+| **PI Electronique** | Gestion des badges, comptes utilisateurs et transactions de rechargement |
+| **Innovorder** | Gestion des commandes, badges et Click & Collect via APIs et webhooks dédiés |
+
+## Explorer la documentation
+
+<CardGroup cols={2}>
+  <Card title="Fonctionnalités" icon="mobile" href="/fonctionnalites/inscription">
+    Toutes les fonctionnalités de l'application : inscription, connexion, menus, rechargement, historique, notifications et plus encore.
+  </Card>
+  <Card title="Onboarding" icon="users" href="/onboarding/pi">
+    Processus d'intégration des nouveaux utilisateurs pour les sites PI Electronique et Innovorder.
+  </Card>
+  <Card title="SSO" icon="key" href="/sso/introduction">
+    Configuration du Single Sign-On : fonctionnement, back-office, impact sur les modules clés et annexes SAML.
+  </Card>
+  <Card title="Innovorder" icon="utensils" href="/innovorder/ouverture-site">
+    Ouverture d'un nouveau site Innovorder et processus d'intégration.
+  </Card>
+</CardGroup>
+
+## Résumé des sections
+
+### Application
+
+La section **Fonctionnalités** documente en détail chaque écran et comportement de l'application mobile :
+
+- **Inscription & connexion** — création de compte manuelle ou via SSO, logique de correspondance badge/email
+- **Profil** — gestion des informations personnelles
+- **Menus** — consultation des menus par site
+- **Rechargement de badge** — processus de rechargement et logique technique
+- **Solde & historique** — affichage des transactions
+- **Service à table** — commande et paiement en salle
+- **Infos restaurant** — informations pratiques par site
+- **Avis** — dépôt et consultation des avis
+- **Réseaux sociaux** — intégration des flux sociaux
+- **Notifications** — gestion des notifications push
+
+### Onboarding
+
+Le **processus d'onboarding** décrit comment intégrer un nouveau groupe de convives sur un site :
+- Import du fichier utilisateurs (nom, prénom, email, badge)
+- Logique de correspondance avec PI Electronique ou Innovorder
+- Gestion des cas SSO et non-SSO
+
+### SSO
+
+La documentation **SSO** couvre l'intégration complète du Single Sign-On :
+- Fonctionnement général et flux d'authentification
+- Configuration dans le back-office Serenest
+- Impact sur le rechargement, les Webviews et le Click & Collect
+- Prérequis, étapes d'intégration et annexe SAML
+- Liste des clients SSO actifs
+
+### Innovorder
+
+La section **Innovorder** détaille les étapes d'ouverture d'un nouveau site :
+- Création du compte API, transmission des clés (Brand ID, JWT Secret, Webhook Secret)
+- Configuration du webhook dans le back-office Innovorder
+- Tests de l'application mobile sur le nouveau site
+
+---
+
+<Tip>
+  En cas de question non couverte par cette documentation, consultez la [FAQ](/faq) ou contactez le support à [support@serenest.fr](mailto:support@serenest.fr).
+</Tip>

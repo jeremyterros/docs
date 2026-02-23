@@ -1,0 +1,78 @@
+---
+title: FAQ
+description: "Questions frequemment posees sur Serenest"
+icon: "circle-question"
+---
+
+## Comment sait-on a quel site appartient un badge ?
+
+Le badge est lie a un site specifique de plusieurs manieres :
+
+- **Lors de l'inscription manuelle (sans SSO)** : l'application verifie que le badge saisi correspond au site mentionne. L'utilisateur est ensuite automatiquement lie a l'entreprise associee a ce site.
+- **Via le SSO** : lorsqu'un utilisateur se connecte via SSO, les informations de site et d'entreprise sont fournies par le fournisseur d'identite (IdP) et utilisees pour associer automatiquement le badge au bon site.
+- **Lors de l'ouverture d'un nouveau site Innovorder** : un badge de test est fourni par Innovorder et est specifiquement lie au nouveau site pendant les phases de test.
+
+<Info>
+  En resume : le badge est toujours associe a un site via un import, une verification lors de l'inscription ou via les donnees SSO.
+</Info>
+
+---
+
+## Faut-il un email pour s'inscrire a l'application Serenest ou le badge suffit-il ?
+
+Cela depend du contexte :
+
+### Avec SSO active
+
+- Si l'utilisateur a un **compte PI Electronique avec email** : le compte est recupere par email et le badge est mis a jour.
+- S'il a un **compte PI avec badge mais sans email** : le compte est recupere via le numero de badge.
+- S'il **n'a pas de compte Serenest** : un nouveau compte est cree avec les informations fournies par le SSO. **L'email n'est pas obligatoire** dans ce cas.
+
+### Sans SSO (inscription manuelle)
+
+L'utilisateur doit fournir :
+- Numero de badge *
+- Prenom *
+- Nom *
+- Email *
+- Mot de passe *
+
+L'**email est obligatoire** dans le processus d'inscription manuelle.
+
+### Recapitulatif
+
+| Contexte | Email obligatoire ? |
+| --- | --- |
+| Inscription manuelle (sans SSO) | **Oui** |
+| Connexion SSO (compte existant ou nouveau) | **Non** — les informations viennent du SSO |
+| Compte PI avec badge mais sans email | **Non** — le badge suffit |
+
+---
+
+## Mon client souhaite mettre a jour tous les badges. Comment proceder ?
+
+<Steps>
+  <Step title="Mettre a jour les badges chez le fournisseur">
+    Mettre a jour les badges d'abord dans le systeme du fournisseur (PI Electronique / Innovorder). Serenest recupere toujours les donnees de badge depuis le fournisseur. Les utilisateurs doivent exister avec leur *nouveau* badge.
+  </Step>
+  <Step title="S'assurer que les emails restent les memes">
+    La continuite de connexion depend de la correspondance par email quand c'est possible. Si les emails ne changent pas, Serenest liera automatiquement le badge mis a jour lors de la connexion.
+  </Step>
+  <Step title="Pour PI Electronique">
+    Serenest mettra a jour le badge automatiquement lors de la connexion si le compte PI peut etre trouve **par email ou par ancien numero de badge**. Si le compte PI n'a **pas d'email**, Serenest peut quand meme faire la correspondance par badge. Les nouveaux numeros de badge doivent deja exister dans PI avant la connexion des utilisateurs.
+  </Step>
+  <Step title="Pour Innovorder">
+    Envoyer le fichier utilisateurs mis a jour (prenom, nom, emails, *nouveaux badges*) pour import. Innovorder l'importe, puis Serenest le recupere. Une fois importe, les utilisateurs peuvent se connecter normalement avec leur nouveau badge.
+  </Step>
+  <Step title="Si le SSO est active">
+    L'IdP doit commencer a envoyer les *nouveaux numeros de badge* dans le payload SAML. Serenest se synchronisera automatiquement.
+  </Step>
+</Steps>
+
+<Tip>
+  **En resume :** Mettre a jour tous les badges au niveau du fournisseur → s'assurer que les emails restent inchanges → s'assurer que le SSO envoie les nouveaux badges → Serenest reassociera automatiquement les comptes lors de la prochaine connexion. Cela garantit **zero impact** et **toutes les fonctionnalites**.
+</Tip>
+
+<Note>
+  Aucune mise a jour de masse n'est necessaire cote Serenest. L'application met a jour les informations utilisateur dynamiquement lors de la connexion (SSO ou classique). Rien ne casse pour les utilisateurs tant que les donnees en amont sont correctes.
+</Note>

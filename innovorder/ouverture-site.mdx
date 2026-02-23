@@ -1,0 +1,32 @@
+---
+title: Ouverture d'un site Innovorder
+description: "Prerequis et exigences pour l'ouverture d'un nouveau site Innovorder"
+icon: "store"
+---
+
+## Statistiques et facturation
+
+- Cote Innovorder : creer un compte de service API
+- Envoyer a Serenest :
+  - **Brand ID** du nouveau site
+  - **JWT Secret**
+  - **Webhook Secret Key**
+- Serenest configure le Webhook dans les integrations du back-office Innovorder
+- Serenest peut acceder directement a la plateforme IAS et creer le nouveau site en ajoutant le Brand ID et le JWT Secret. Cela permet a la plateforme de se connecter directement aux donnees Innovorder. Aucune action supplementaire n'est requise concernant les statistiques et la facturation.
+
+## Application mobile
+
+<Steps>
+  <Step title="Creer le site">
+    Creer le site dans IAS ou le Back-Office Serenest (s'il est cree sur une plateforme, il sera automatiquement cree sur l'autre).
+  </Step>
+  <Step title="Creer un utilisateur de test">
+    Creer un utilisateur et un badge de test pour le nouveau site.
+  </Step>
+  <Step title="Tester l'inscription">
+    Tester l'inscription via ce badge dans l'application mobile, en s'assurant de selectionner le bon site.
+  </Step>
+  <Step title="Tester le rechargement">
+    Tester le rechargement du badge.
+  </Step>
+</Steps>
