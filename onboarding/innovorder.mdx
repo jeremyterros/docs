@@ -5,13 +5,13 @@ icon: "users-gear"
 ---
 
 <Warning>
-  Le processus d'onboarding Innovorder pourra etre revise avant fevrier 2026 selon les souhaits du client The Hive ou selon les choix de Serenest.
+  Le processus d'onboarding Innovorder pourra être révisé avant février 2026 selon les souhaits du client The Hive ou selon les choix de Serenest.
 
-  Plusieurs possibilites envisagees :
+  Plusieurs possibilités envisagées :
   - QR Code pour guider l'utilisateur lors de l'inscription
-  - Import en masse dans le back-office Serenest et generation d'un mot de passe aleatoire, avec mise a jour obligatoire a la premiere connexion
+  - Import en masse dans le back-office Serenest et génération d'un mot de passe aléatoire, avec mise à jour obligatoire à la première connexion
 
-  Si revise, le nouveau processus devra etre clairement defini, documente et systematiquement applique a chaque ouverture de site.
+  Si révisé, le nouveau processus devra être clairement défini, documenté et systématiquement appliqué à chaque ouverture de site.
 </Warning>
 
 ## Ouverture d'un nouveau site Innovorder
@@ -99,31 +99,31 @@ icon: "users-gear"
 
 ## Import des convives
 
-Serenest recoit un fichier contenant :
+Serenest reçoit un fichier contenant :
 
 - Nom
-- Prenom
+- Prénom
 - Email **ou**
 - Badge
 
-Ce fichier est integre dans les systemes Innovorder. Un email de masse est envoye aux convives pour qu'ils puissent installer l'application et s'inscrire.
+Ce fichier est intégré dans les systèmes Innovorder. Un email de masse est envoyé aux convives pour qu'ils puissent installer l'application et s'inscrire.
 
-## Verification et correspondance avec Innovorder
+## Vérification et correspondance avec Innovorder
 
-Pour chaque inscription, l'application compare les donnees saisies par l'utilisateur avec les donnees existantes dans Innovorder :
+Pour chaque inscription, l'application compare les données saisies par l'utilisateur avec les données existantes dans Innovorder :
 
-- **Le badge ou l'email correspond au site indique** : inscription validee, compte lie a Innovorder.
+- **Le badge ou l'email correspond au site indiqué** : inscription validée, compte lié à Innovorder.
 - **Le badge ou l'email ne correspond pas au site** :
-  - Inscription bloquee
-  - Pop-up demandant a l'utilisateur de contacter le responsable du site
+  - Inscription bloquée
+  - Pop-up demandant à l'utilisateur de contacter le responsable du site
 
 ### Email
 
-- Utilise pour l'authentification et la communication (notifications, reinitialisation du mot de passe, informations convives).
-- Si l'email de l'application differe de celui dans Innovorder :
-  - Un nouveau compte est cree dans le back-office Serenest
-  - Le badge et l'email saisis sont lies
-  - L'utilisateur **n'est pas** bloque
+- Utilisé pour l'authentification et la communication (notifications, réinitialisation du mot de passe, informations convives).
+- Si l'email de l'application diffère de celui dans Innovorder :
+  - Un nouveau compte est créé dans le back-office Serenest
+  - Le badge et l'email saisis sont liés
+  - L'utilisateur **n'est pas** bloqué
 
 ### Synchronisation du badge
 
@@ -133,41 +133,41 @@ Si le badge d'un utilisateur est mis à jour côté Innovorder et que son email 
 
 ### Avec SSO
 
-**Utilisateur deja dans Serenest :**
+**Utilisateur déjà dans Serenest :**
 - Connexion avec le compte existant
-- Mise a jour des informations de site et d'entreprise
-- Acces refuse si le role est *manager* ou *admin*
-- Prenom et nom mis a jour
-- Mot de passe reinitialise (non necessaire avec le SSO)
+- Mise à jour des informations de site et d'entreprise
+- Accès refusé si le rôle est *manager* ou *admin*
+- Prénom et nom mis à jour
+- Mot de passe réinitialisé (non nécessaire avec le SSO)
 
 **Nouvel utilisateur Serenest :**
-- Creation de compte avec les informations du SSO (prenom, nom, site, entreprise)
+- Création de compte avec les informations du SSO (prénom, nom, site, entreprise)
 
 **Correspondance avec Innovorder :**
 
-| Donnees disponibles | Comportement |
+| Données disponibles | Comportement |
 | --- | --- |
-| Avec email | Recherche du compte Innovorder et mise a jour du badge |
-| Avec badge | Recherche du compte Innovorder par badge et recuperation de l'email |
-| Sans email | Recuperation via le badge |
+| Avec email | Recherche du compte Innovorder et mise à jour du badge |
+| Avec badge | Recherche du compte Innovorder par badge et récupération de l'email |
+| Sans email | Récupération via le badge |
 | Sans email et sans badge | Impossible, le compte n'existe pas dans Innovorder |
 | Sans badge | Impossible, tous les comptes Innovorder ont un badge |
 
 ### Sans SSO
 
 **Inscription manuelle :**
-- L'utilisateur clique sur *Creer un compte*
-- Verification que le badge correspond au site indique
-- L'utilisateur est automatiquement lie a l'entreprise correspondant au site
+- L'utilisateur clique sur *Créer un compte*
+- Vérification que le badge correspond au site indiqué
+- L'utilisateur est automatiquement lié à l'entreprise correspondant au site
 
 ## Comparaison PI vs Innovorder
 
 | Sujet | PI | Innovorder |
 | --- | --- | --- |
-| Verification d'identite | Badge uniquement | Badge **OU** email |
-| Email different | Bloquant | Nouveau compte cree |
+| Vérification d'identité | Badge uniquement | Badge **OU** email |
+| Email différent | Bloquant | Nouveau compte créé |
 | Import | Tous les champs requis | Email **ou** badge |
 
 <Info>
-  Innovorder fonctionne comme PI, a une difference majeure pres : la verification accepte **l'email OU le badge**, et non le badge uniquement.
+  Innovorder fonctionne comme PI, à une différence majeure près : la vérification accepte **l'email OU le badge**, et non le badge uniquement.
 </Info>

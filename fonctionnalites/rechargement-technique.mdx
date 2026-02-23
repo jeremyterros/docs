@@ -4,15 +4,15 @@ description: "Documentation technique du rechargement de badge via PiPay"
 icon: "gear"
 ---
 
-## Mise a jour automatique de l'email
+## Mise à jour automatique de l'email
 
-L'email est automatiquement mis a jour dans PiPay lors de la connexion de l'utilisateur ou au demarrage de la session.
+L'email est automatiquement mis à jour dans PiPay lors de la connexion de l'utilisateur ou au démarrage de la session.
 
 ## Endpoint `envoi_epaiement_compte`
 
-L'endpoint `envoi_epaiement_compte` est utilise pour crediter ou debiter de l'argent d'un badge.
+L'endpoint `envoi_epaiement_compte` est utilisé pour créditer ou débiter de l'argent d'un badge.
 
-Il a egalement une seconde utilisation cachee de la documentation Pi Electronique : lorsque le montant est `0`, l'endpoint peut etre utilise pour **inscrire un utilisateur au service PiPay**.
+Il a également une seconde utilisation cachée de la documentation Pi Electronique : lorsque le montant est `0`, l'endpoint peut être utilisé pour **inscrire un utilisateur au service PiPay**.
 
 <Card title="Documentation fonctionnelle" icon="book" href="https://gitlab.com/terros1/serenest/ias-bo-client/-/wikis/pi/api/endpoint/envoi_epaiement_compte#notes">
   Lien vers le wiki GitLab
@@ -20,23 +20,23 @@ Il a egalement une seconde utilisation cachee de la documentation Pi Electroniqu
 
 ## Fonctionnement
 
-Cet endpoint prend les parametres suivants :
+Cet endpoint prend les paramètres suivants :
 
 - L'identification de l'utilisateur et du serveur
-- Le montant a crediter/debiter
+- Le montant à créditer/débiter
 
 | Montant | Action |
 | --- | --- |
-| `montant > 0` | Credit du badge |
-| `montant < 0` | Debit du badge |
+| `montant > 0` | Crédit du badge |
+| `montant < 0` | Débit du badge |
 | `montant == 0` | Inscription de l'utilisateur au service PiPay |
 
 <Warning>
-  Lorsque le `montant == 0`, le champ `date_fin_validite` n'est pas retourne dans la reponse.
+  Lorsque le `montant == 0`, le champ `date_fin_validite` n'est pas retourné dans la réponse.
 </Warning>
 
 ## Inscription automatique PiPay
 
-Une inscription automatique a ete ajoutee : si l'utilisateur n'est pas encore inscrit au service PiPay, l'inscription se fait automatiquement lors de la premiere connexion.
+Une inscription automatique a été ajoutée : si l'utilisateur n'est pas encore inscrit au service PiPay, l'inscription se fait automatiquement lors de la première connexion.
 
 - **Merge requests** : [!283 (merged)](https://gitlab.com/terros1/serenest/ias-bo-client/-/merge_requests/283) | [!285 (merged)](https://gitlab.com/terros1/serenest/ias-bo-client/-/merge_requests/285)

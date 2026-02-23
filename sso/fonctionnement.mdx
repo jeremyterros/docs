@@ -4,27 +4,27 @@ description: "Comment le SSO fonctionne avec Serenest"
 icon: "arrows-rotate"
 ---
 
-## Description generale
+## Description générale
 
-Le SSO simplifie l'experience utilisateur. Une fois connecte a l'application principale de l'entreprise, les utilisateurs peuvent acceder a Serenest sans nouvelle authentification.
+Le SSO simplifie l'expérience utilisateur. Une fois connecté à l'application principale de l'entreprise, les utilisateurs peuvent accéder à Serenest sans nouvelle authentification.
 
-## Acteurs cles
+## Acteurs clés
 
-| Acteur | Role |
+| Acteur | Rôle |
 | --- | --- |
-| **Fournisseur d'identite (IdP)** | L'application source ou l'utilisateur est deja authentifie |
+| **Fournisseur d'identité (IdP)** | L'application source où l'utilisateur est déjà authentifié |
 | **Fournisseur de service (SP)** | Serenest |
 
-## Flux SAML simplifie
+## Flux SAML simplifié
 
 <Steps>
-  <Step title="Acces a Serenest">
-    L'utilisateur clique sur un lien ou un bouton menant a Serenest depuis l'application source.
+  <Step title="Accès à Serenest">
+    L'utilisateur clique sur un lien ou un bouton menant à Serenest depuis l'application source.
   </Step>
   <Step title="Envoi du token">
-    L'IdP envoie un **token d'authentification securise** a Serenest.
+    L'IdP envoie un **token d'authentification sécurisé** à Serenest.
   </Step>
-  <Step title="Verification et acces">
-    Serenest dechiffre le token, identifie l'utilisateur et accorde l'acces.
+  <Step title="Vérification et accès">
+    Serenest déchiffre le token, identifie l'utilisateur et accorde l'accès.
   </Step>
 </Steps>

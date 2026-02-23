@@ -7,35 +7,35 @@ icon: "list-ol"
 ## Processus complet
 
 <Steps>
-  <Step title="Creation du compte API">
-    Innovorder cree le compte de service API.
+  <Step title="Création du compte API">
+    Innovorder crée le compte de service API.
   </Step>
   <Step title="Envoi des identifiants">
-    Innovorder envoie le **Brand ID** et le **JWT Secret** a Serenest.
+    Innovorder envoie le **Brand ID** et le **JWT Secret** à Serenest.
   </Step>
-  <Step title="Creation du site">
-    Serenest cree le nouveau site dans IAS ou dans le Back-Office Serenest.
+  <Step title="Création du site">
+    Serenest crée le nouveau site dans IAS ou dans le Back-Office Serenest.
   </Step>
   <Step title="Configuration des identifiants">
-    Serenest renseigne le Brand ID et le JWT Secret dans les champs dedies pour le site ; la connexion passe au vert.
+    Serenest renseigne le Brand ID et le JWT Secret dans les champs dédiés pour le site ; la connexion passe au vert.
   </Step>
   <Step title="Configuration du webhook">
     Serenest configure le webhook pour le nouveau site via le back-office Innovorder.
   </Step>
   <Step title="Import des utilisateurs">
-    Serenest recupere les prenoms, noms, badges et emails des utilisateurs pour le site.
+    Serenest récupère les prénoms, noms, badges et emails des utilisateurs pour le site.
   </Step>
   <Step title="Confirmation de l'import">
-    Innovorder confirme a Serenest que le fichier a ete importe avec succes dans leur base de donnees.
+    Innovorder confirme à Serenest que le fichier a été importé avec succès dans leur base de données.
   </Step>
   <Step title="Badge de test">
-    Innovorder fournit un badge de test a Serenest.
+    Innovorder fournit un badge de test à Serenest.
   </Step>
   <Step title="Tests">
-    L'equipe Serenest effectue les tests complets.
+    L'équipe Serenest effectue les tests complets.
   </Step>
   <Step title="Lancement">
-    Le nouveau site est confirme comme pret au lancement. Un email de masse est envoye aux convives.
+    Le nouveau site est confirmé comme prêt au lancement. Un email de masse est envoyé aux convives.
   </Step>
 </Steps>
 
@@ -43,8 +43,8 @@ icon: "list-ol"
 
 Pour configurer le webhook dans le back-office Innovorder :
 
-1. Aller dans **Configuration** > onglet **"Integration"**
-2. Descendre jusqu'a la section **"Webhooks"**
+1. Aller dans **Configuration** > onglet **"Intégration"**
+2. Descendre jusqu'à la section **"Webhooks"**
 3. Cliquer sur **"+"** pour ajouter un nouveau webhook
 4. Innovorder fournit une **Webhook Secret Key**
 5. Configurer l'URL du webhook
@@ -53,39 +53,39 @@ Pour configurer le webhook dans le back-office Innovorder :
 
 | Environnement | URL |
 | --- | --- |
-| Pre-production | `https://app-serenest-v2.terros.io/api/innovorder/webhook/order` |
+| Pré-production | `https://app-serenest-v2.terros.io/api/innovorder/webhook/order` |
 | Production | `https://admin.app.serenest.fr/api/innovorder/webhook/order` |
 
 6. Ajouter la **Webhook Secret Key** avec l'URL
 
 ## Import des utilisateurs
 
-Deux options pour la recuperation des utilisateurs :
+Deux options pour la récupération des utilisateurs :
 
-1. **Fichier fourni par le client** : Serenest transmet le fichier a Innovorder pour import dans leur base de donnees.
-2. **Fichier automatique sur serveur** : Serenest recupere le fichier et l'envoie a Innovorder — dans ce cas, le responsable du site Serenest met a jour manuellement le fichier au lancement du projet.
+1. **Fichier fourni par le client** : Serenest transmet le fichier à Innovorder pour import dans leur base de données.
+2. **Fichier automatique sur serveur** : Serenest récupère le fichier et l'envoie à Innovorder — dans ce cas, le responsable du site Serenest met à jour manuellement le fichier au lancement du projet.
 
 ## Inscription des utilisateurs
 
-Deux scenarios possibles :
+Deux scénarios possibles :
 
-- **Utilisateurs sans compte Serenest** : ils peuvent s'inscrire dans l'application avec leurs badges, en selectionnant le site.
-- **Utilisateurs avec un compte Serenest existant** : tous les emails doivent etre envoyes a Innovorder, qui les importera dans sa base de donnees et attribuera les badges. Une fois fait, les utilisateurs peuvent se connecter avec leur nouveau badge.
+- **Utilisateurs sans compte Serenest** : ils peuvent s'inscrire dans l'application avec leurs badges, en sélectionnant le site.
+- **Utilisateurs avec un compte Serenest existant** : tous les emails doivent être envoyés à Innovorder, qui les importera dans sa base de données et attribuera les badges. Une fois fait, les utilisateurs peuvent se connecter avec leur nouveau badge.
 
 ## Checklist de validation
 
 Le testeur Serenest doit, une fois en possession du badge de test :
 
 <Checklist>
-  - [ ] Verifier le flux dans l'application et l'affichage des parametres configures dans le back-office
-  - [ ] Cliquer sur "Recharger mon badge" et verifier la redirection vers Innovorder
+  - [ ] Vérifier le flux dans l'application et l'affichage des paramètres configurés dans le back-office
+  - [ ] Cliquer sur "Recharger mon badge" et vérifier la redirection vers Innovorder
   - [ ] Effectuer un rechargement de test pour un montant au choix
-  - [ ] Verifier que le badge est bien credite
-  - [ ] Repeter les tests avec d'autres badges si necessaire
+  - [ ] Vérifier que le badge est bien crédité
+  - [ ] Répéter les tests avec d'autres badges si nécessaire
 </Checklist>
 
-Une fois toutes les etapes validees, le nouveau site peut etre confirme comme pret au lancement.
+Une fois toutes les étapes validées, le nouveau site peut être confirmé comme prêt au lancement.
 
 <Note>
-  Serenest envoie un email de masse aux convives pour les informer qu'ils peuvent telecharger l'application afin de consulter et recharger leur badge et acceder aux menus.
+  Serenest envoie un email de masse aux convives pour les informer qu'ils peuvent télécharger l'application afin de consulter et recharger leur badge et accéder aux menus.
 </Note>
