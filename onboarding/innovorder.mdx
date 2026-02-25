@@ -118,7 +118,15 @@ Pour chaque inscription, l'application compare les données saisies par l'utilis
 
 ### Synchronisation du badge
 
-Si le badge d'un utilisateur est mis à jour côté Innovorder et que son email reste identique, le nouveau badge sera automatiquement synchronisé sur son profil lors de sa prochaine connexion, à condition que l'ancien badge ne soit plus valide.
+Si le badge d'un utilisateur est mis à jour côté Innovorder et que son email est **strictement identique** dans les deux systèmes (Innovorder et Serenest), le nouveau badge sera automatiquement synchronisé sur son profil lors de sa prochaine connexion, à condition que l'ancien badge ne soit plus valide.
+
+<Warning>
+  **L'email est la condition indispensable à la synchronisation automatique des badges.**
+
+  Lorsque les numéros de badge diffèrent entre Innovorder et Serenest, la mise à jour automatique ne peut s'effectuer que si l'adresse email est rigoureusement identique dans les deux systèmes. En cas de discordance, la synchronisation n'aura pas lieu et l'utilisateur ne pourra pas se connecter à l'application.
+
+  Dans cette situation, il est nécessaire de corriger manuellement l'adresse email dans l'un des deux systèmes avant toute nouvelle tentative de connexion.
+</Warning>
 
 ## Processus d'inscription
 
