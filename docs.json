@@ -92,17 +92,6 @@
           },
         ]
       },
-      {
-        "tab": "PI Electronique",
-        "groups": [
-          {
-            "group": "Documentation officielle",
-            "pages": [
-              "doc-pi/documentation"
-            ]
-          }
-        ]
-      }
     ],
     "global": {
       "anchors": [
