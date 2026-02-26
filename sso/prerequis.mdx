@@ -6,20 +6,34 @@ icon: "list-check"
 
 Pour activer le SSO et ses fonctionnalités associées, les éléments suivants doivent être fournis.
 
-## Documents à fournir
+## Éléments à fournir par l'IdP
 
 <CardGroup cols={2}>
-  <Card title="Certificat X.509" icon="file-certificate">
-    Certificat de signature X.509 au format PEM (.pem)
+  <Card title="IdP Entity ID" icon="fingerprint">
+    Identifiant unique de votre IdP (ex. `https://idp.yourcompany.com/saml`)
   </Card>
-  <Card title="Clé publique .pub" icon="key">
-    Clé publique pour la validation de signature
+  <Card title="IdP SSO URL" icon="link">
+    URL de connexion de votre IdP
   </Card>
-  <Card title="Métadonnées SAML" icon="file-code">
-    Fichier de métadonnées SAML du fournisseur d'identité
+  <Card title="IdP Certificate" icon="file-certificate">
+    Certificat de signature X.509 au format PEM
   </Card>
-  <Card title="URLs de service" icon="link">
-    URLs pour le rechargement, le SSO Webview et le Click & Collect
+  <Card title="Attribute Mapping" icon="sliders">
+    Correspondance entre les attributs de votre IdP et les champs Serenest (email, prénom, nom…)
+  </Card>
+</CardGroup>
+
+## Éléments fournis par Serenest
+
+<CardGroup cols={2}>
+  <Card title="SP Entity ID" icon="building">
+    Identifiant de Serenest en tant que fournisseur de service (par défaut : `serenest-sp`)
+  </Card>
+  <Card title="ACS URL" icon="arrow-right-to-bracket">
+    URL vers laquelle votre IdP doit envoyer la réponse SAML
+  </Card>
+  <Card title="SP Metadata URL" icon="file-code">
+    URL de téléchargement des métadonnées SP générées automatiquement par Serenest
   </Card>
 </CardGroup>
 
