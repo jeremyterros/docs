@@ -15,16 +15,26 @@ Le SSO simplifie l'expérience utilisateur. Une fois connecté à l'application 
 | **Fournisseur d'identité (IdP)** | L'application source où l'utilisateur est déjà authentifié |
 | **Fournisseur de service (SP)** | Serenest |
 
-## Flux SAML simplifié
+## Configuration par site
+
+Chaque site dans Serenest est identifié par un **UUID unique** et dispose de sa propre configuration SAML indépendante. Cela permet à plusieurs entreprises de connecter leur propre fournisseur d'identité sur un même environnement Serenest.
+
+## Flux SAML
 
 <Steps>
-  <Step title="Accès à Serenest">
-    L'utilisateur clique sur un lien ou un bouton menant à Serenest depuis l'application source.
+  <Step title="Clic SSO">
+    L'utilisateur clique sur un bouton SSO dans l'application tierce.
   </Step>
-  <Step title="Envoi du token">
-    L'IdP envoie un **token d'authentification sécurisé** à Serenest.
+  <Step title="Authentification par l'IdP">
+    Le fournisseur d'identité authentifie l'utilisateur et génère une assertion SAML signée.
   </Step>
-  <Step title="Vérification et accès">
-    Serenest déchiffre le token, identifie l'utilisateur et accorde l'accès.
+  <Step title="POST de la SAMLResponse">
+    L'IdP envoie la SAMLResponse (XML Base64) directement vers l'ACS URL de Serenest via le navigateur de l'utilisateur.
+  </Step>
+  <Step title="Validation et provisionnement">
+    Serenest vérifie la signature, extrait les attributs utilisateur, crée ou met à jour le compte, puis génère un token d'authentification.
+  </Step>
+  <Step title="Connexion automatique">
+    Le cookie de session est posé et l'utilisateur est redirigé dans l'application Webviews Serenest.
   </Step>
 </Steps>

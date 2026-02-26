@@ -1,6 +1,6 @@
 ---
 title: Annexe technique SAML
-description: "Documentation technique de l'intégration SAML pour le SSO Serenest"
+description: "Documentation technique de l'intégration SAML pour le SSO Serenest — destinée aux développeurs IdP tiers"
 icon: "code"
 ---
 
@@ -8,97 +8,219 @@ icon: "code"
 
 Serenest utilise **SAML 2.0** (Security Assertion Markup Language) comme standard pour la gestion des intégrations SSO entre les fournisseurs d'identité tiers (IdP) et Serenest (fournisseur de service / SP).
 
-L'objectif est de permettre aux utilisateurs connectés à un système tiers (ex. une application d'entreprise) d'accéder aux Webviews Serenest **sans avoir à se reconnecter manuellement**.
+L'objectif est de permettre aux utilisateurs connectés à un système tiers d'accéder aux **Webviews Serenest** sans avoir à se reconnecter manuellement.
+
+Chaque site (bâtiment/propriété) dans Serenest possède sa propre configuration SAML indépendante, permettant à plusieurs entreprises de connecter leur propre fournisseur d'identité.
+
+## Acteurs SAML
+
+| Acteur | Rôle |
+| --- | --- |
+| **Fournisseur d'identité (IdP)** | Le système tiers — authentifie les utilisateurs et envoie les assertions SAML |
+| **Fournisseur de service (SP)** | Serenest — reçoit et valide les assertions SAML, puis connecte l'utilisateur |
+
+## Configuration par site
+
+Chaque site Serenest est identifié par un **UUID unique**. La configuration SAML est gérée via le back-office Serenest et inclut :
+
+| Paramètre | Description |
+| --- | --- |
+| **IdP Entity ID** | L'identifiant unique de votre IdP (ex. `https://idp.yourcompany.com/saml`) |
+| **IdP SSO URL** | L'URL de login de votre IdP |
+| **IdP Certificate** | Le certificat de signature X.509 de votre IdP au format PEM |
+| **SP Entity ID** | L'identifiant Serenest (par défaut : `serenest-sp`) |
+| **Attribute Mapping** | Correspondance entre les noms d'attributs de votre IdP et les champs Serenest |
+
+### Métadonnées SP
+
+Serenest génère automatiquement les métadonnées SP pour chaque site. L'administrateur IdP peut les télécharger à :
+
+| Environnement | URL des métadonnées |
+| --- | --- |
+| **Pré-production** | `https://preprod.api.serenest.terros.io/saml/metadata/{siteUuid}` |
+| **Production** | `https://api.serenest.fr/saml/metadata/{siteUuid}` |
+
+Ce XML contient le SP entity ID, l'ACS URL et les exigences de signature nécessaires à la configuration de l'IdP.
 
 ## Flux SAML détaillé
 
-<img src="/images/FlowSAML.png" alt="Flux SAML complet" style={{width: "25%"}} />
+```
+┌──────────┐       ┌──────────────┐       ┌──────────────────┐       ┌──────────────┐
+│   User   │       │  Third-Party │       │ Serenest Webviews│       │ Serenest API │
+│ (Browser)│       │   IdP (You)  │       │   (Frontend)     │       │  (Backend)   │
+└────┬─────┘       └──────┬───────┘       └────────┬─────────┘       └──────┬───────┘
+     │  1. Click SSO      │                        │                        │
+     │ ─────────────────> │                        │                        │
+     │                    │                        │                        │
+     │  2. Authenticate   │                        │                        │
+     │ <────────────────> │                        │                        │
+     │                    │                        │                        │
+     │  3. POST SAMLResponse (base64, form-encoded)│                        │
+     │ ──────────────────────────────────────────> │                        │
+     │                    │                        │                        │
+     │                    │                        │ 4. Forward SAMLResponse│
+     │                    │                        │ ─────────────────────> │
+     │                    │                        │                        │
+     │                    │                        │  5. Validate signature │
+     │                    │                        │     Extract attributes │
+     │                    │                        │     Provision user     │
+     │                    │                        │ <───── { token, user } │
+     │                    │                        │                        │
+     │  6. Set session cookie, redirect to app     │                        │
+     │ <────────────────────────────────────────── │                        │
+```
 
 <Steps>
-  <Step title="Clic utilisateur">
-    L'utilisateur clique sur un bouton dans l'application tierce pour accéder à Serenest.
+  <Step title="Clic SSO">
+    L'utilisateur clique sur le bouton SSO dans l'application tierce.
   </Step>
-  <Step title="Requête au backend">
-    L'application tierce ouvre un navigateur interne et envoie une requête à son propre backend avec le **token d'authentification** de l'utilisateur et l'URL de destination souhaitée (paramètre `url`).
+  <Step title="Authentification par l'IdP">
+    Le fournisseur d'identité tiers authentifie l'utilisateur et construit une assertion SAML.
   </Step>
-  <Step title="Génération de la réponse SAML">
-    Le backend tiers génère une **réponse SAML**, l'encode en base64 et effectue une requête POST vers l'URL ACS de Serenest.
+  <Step title="POST de la SAMLResponse">
+    L'IdP envoie la SAMLResponse à l'ACS URL de Serenest via le navigateur de l'utilisateur (SAML POST binding standard). La SAMLResponse est un XML encodé en Base64 dans un champ de formulaire.
   </Step>
-  <Step title="Vérification par Serenest">
-    Serenest décode et vérifie la **signature SAML** (via le certificat `.crt` fourni).
+  <Step title="Transmission au backend">
+    Le frontend Serenest reçoit le POST et transmet la SAMLResponse à l'API backend Serenest.
   </Step>
-  <Step title="Extraction et token">
-    Serenest extrait les données utilisateur et génère un token d'accès interne.
+  <Step title="Validation par Serenest">
+    Le backend Serenest valide la réponse SAML : vérifie la signature XML, contrôle les timestamps et conditions, extrait les attributs utilisateur, provisionne le compte (création ou mise à jour), et génère un token d'authentification.
   </Step>
   <Step title="Connexion automatique">
-    Ce token est envoyé à l'application tierce, qui connecte automatiquement l'utilisateur.
+    Le frontend Serenest définit le cookie de session et redirige l'utilisateur dans l'application Webviews.
   </Step>
 </Steps>
 
-## URLs ACS
+## URLs ACS (Assertion Consumer Service)
 
-| Environnement | URL |
+C'est l'URL vers laquelle l'IdP doit POST la SAMLResponse. Elle est **unique par site** :
+
+| Environnement | ACS URL |
 | --- | --- |
-| Pré-production | `https://preprod.app.serenest.fr/api/auth/sso/serenest/acs` |
-| Production | `https://app.serenest.fr/api/auth/sso/serenest/acs` |
+| **Pré-production** | `https://app.serenest.terros.io/api/auth/sso/acs/{siteUuid}` |
+| **Production** | `https://app.serenest.fr/api/auth/sso/acs/{siteUuid}` |
 
-## Structure de la SAMLResponse
+Remplacer `{siteUuid}` par l'UUID du site fourni par Serenest lors de la mise en place.
 
-Le payload de la SAMLResponse doit contenir les champs suivants :
+## Attributs SAML
 
-| Champ SAML | Description | Requis |
+### Mapping par défaut
+
+Si votre IdP utilise les URIs de claims Microsoft/OASIS standard, les valeurs par défaut fonctionnent sans configuration supplémentaire. Serenest extrait le dernier segment du nom d'attribut (ex. `http://schemas.xmlsoap.org/.../emailaddress` → `emailaddress`).
+
+| Champ Serenest | Nom d'attribut IdP par défaut | Requis |
 | --- | --- | --- |
-| `emailaddress` | Adresse email de l'utilisateur | Oui |
-| `givenname` | Prénom | Oui |
-| `surname` | Nom de famille | Oui |
-| `name` | Nom complet | Oui |
-| `nameidentifier` | UUID du site tiers (lié à l'utilisateur) | Oui |
-| `badgenumber` | Numéro de badge | Optionnel |
-| `destination` | URL cible dans Serenest (ex. `/menus`) | Oui |
+| **Email** | `emailaddress` | Oui |
+| **Prénom** | `givenname` | Oui |
+| **Nom** | `surname` | Oui |
+| **Nom complet** | `name` | Non |
+| **Numéro de badge** | `badgenumber` | Non |
 
-**Format attendu** : POST form-data avec un seul champ nommé `SAMLResponse` contenant le XML encodé en Base64.
+Si votre IdP utilise des noms d'attributs différents, le mapping peut être personnalisé dans le back-office Serenest (ex. mapper `email` vers `mail`, `firstName` vers `given_name`, etc.).
 
-## Certificats et sécurité
-
-Le tiers doit fournir à Serenest :
-
-- Un **certificat X.509** (`.crt`)
-- Une **clé publique** (`.pub`)
-
-Ces fichiers sont utilisés pour :
-
-- Authentifier la source de la requête SAML
-- Valider la signature de la réponse
-- Optionnellement générer un fichier de métadonnées IdP
-
-## Flux de test
-
-<Steps>
-  <Step title="Partage du certificat">
-    Le tiers partage son certificat `.crt` avec l'équipe Serenest.
-  </Step>
-  <Step title="Configuration de l'IdP">
-    Serenest configure l'IdP dans son backend.
-  </Step>
-  <Step title="Échange de comptes de test">
-    Un **compte de test** est échangé entre les deux parties.
-  </Step>
-  <Step title="Intégration du bouton SSO">
-    Un bouton d'accès SSO est intégré dans l'application tierce.
-  </Step>
-  <Step title="Tests en pré-production">
-    La réponse SAML est testée en environnement de pré-production.
-  </Step>
-  <Step title="Mise en production">
-    Une fois validée, la configuration est répliquée en production.
-  </Step>
-</Steps>
-
-## Bonnes pratiques et recommandations
+### Exigences
 
 <Warning>
-  Ne pas créer automatiquement un compte dans Serenest si l'utilisateur n'existe pas (conformité RGPD).
+  L'attribut **email** est **obligatoire**. S'il est absent, l'authentification échouera.
 </Warning>
+
+- **Prénom** et **nom** sont fortement recommandés. En leur absence, le compte sera créé avec des champs nom vides.
+- La réponse SAML **doit être signée** avec le certificat fourni lors de la configuration (sauf si la signature d'assertion est explicitement désactivée dans la configuration).
+
+## Format de la requête POST
+
+L'IdP envoie une requête POST binding SAML 2.0 standard :
+
+```
+POST /api/auth/sso/acs/{siteUuid} HTTP/1.1
+Host: app.serenest.fr
+Content-Type: application/x-www-form-urlencoded
+
+SAMLResponse=PHNhbWxwOlJlc3BvbnNl...base64_encoded_xml...
+```
+
+Le champ `SAMLResponse` contient le XML SAML complet encodé en Base64.
+
+## Exemple de SAMLResponse
+
+```xml
+<samlp:Response
+    xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+    ID="_response_id"
+    Version="2.0"
+    IssueInstant="2026-01-15T10:30:00.000Z"
+    Destination="https://app.serenest.fr/api/auth/sso/acs/{siteUuid}">
+
+    <saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">
+        https://idp.yourcompany.com/saml
+    </saml:Issuer>
+
+    <samlp:Status>
+        <samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/>
+    </samlp:Status>
+
+    <saml:Assertion
+        xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+        Version="2.0"
+        ID="_assertion_id"
+        IssueInstant="2026-01-15T10:30:00.000Z">
+
+        <saml:Issuer>https://idp.yourcompany.com/saml</saml:Issuer>
+
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+            <!-- Signature XML avec le certificat de l'IdP -->
+        </Signature>
+
+        <saml:Subject>
+            <saml:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress">
+                user@company.com
+            </saml:NameID>
+            <saml:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+                <saml:SubjectConfirmationData
+                    NotOnOrAfter="2026-01-15T10:40:00.000Z"
+                    Recipient="https://app.serenest.fr/api/auth/sso/acs/{siteUuid}"/>
+            </saml:SubjectConfirmation>
+        </saml:Subject>
+
+        <saml:Conditions
+            NotBefore="2026-01-15T10:30:00.000Z"
+            NotOnOrAfter="2026-01-15T10:40:00.000Z">
+            <saml:AudienceRestriction>
+                <saml:Audience>serenest-sp</saml:Audience>
+            </saml:AudienceRestriction>
+        </saml:Conditions>
+
+        <saml:AuthnStatement AuthnInstant="2026-01-15T10:30:00.000Z">
+            <saml:AuthnContext>
+                <saml:AuthnContextClassRef>
+                    urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
+                </saml:AuthnContextClassRef>
+            </saml:AuthnContext>
+        </saml:AuthnStatement>
+
+        <saml:AttributeStatement>
+            <saml:Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress">
+                <saml:AttributeValue>user@company.com</saml:AttributeValue>
+            </saml:Attribute>
+            <saml:Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname">
+                <saml:AttributeValue>John</saml:AttributeValue>
+            </saml:Attribute>
+            <saml:Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname">
+                <saml:AttributeValue>Doe</saml:AttributeValue>
+            </saml:Attribute>
+            <saml:Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name">
+                <saml:AttributeValue>John Doe</saml:AttributeValue>
+            </saml:Attribute>
+            <!-- Optionnel -->
+            <saml:Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/badgenumber">
+                <saml:AttributeValue>12345</saml:AttributeValue>
+            </saml:Attribute>
+        </saml:AttributeStatement>
+    </saml:Assertion>
+</samlp:Response>
+```
+
+## Bonnes pratiques
 
 - Vérifier la **période de validité** de la réponse SAML (via `NotOnOrAfter`).
 - En cas d'erreur, fournir des logs incluant :

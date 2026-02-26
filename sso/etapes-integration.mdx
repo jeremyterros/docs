@@ -4,17 +4,45 @@ description: "Étapes détaillées pour l'intégration du SSO avec Serenest"
 icon: "diagram-project"
 ---
 
-## Configuration technique
+## Prérequis
+
+- Serenest confirme que les Webviews du site sont activées.
+- Les deux parties s'accordent sur le flux utilisateur :
+  - Pour un utilisateur déjà présent dans les deux systèmes : connexion automatique à Serenest.
+  - Pour un nouvel utilisateur : provisionnement automatique du compte Serenest via les attributs SAML.
+
+## Étapes de mise en place
 
 <Steps>
-  <Step title="Comptes de test">
-    Créer des **comptes de test** pour chaque service.
+  <Step title="Serenest fournit les informations SP">
+    Serenest communique au tiers :
+    - **ACS URL** : `https://app.serenest.fr/api/auth/sso/acs/{siteUuid}`
+    - **SP Metadata URL** : `https://api.serenest.fr/saml/metadata/{siteUuid}`
+    - **SP Entity ID** : `serenest-sp` (ou personnalisé si configuré)
   </Step>
-  <Step title="Configuration back-office">
-    Compléter la configuration dans le back-office.
+  <Step title="Le tiers fournit ses informations IdP">
+    Le tiers communique à Serenest :
+    - **IdP Entity ID** (identifiant SAML issuer)
+    - **IdP SSO URL** (endpoint de login SAML)
+    - **Certificat X.509** de signature au format PEM (fichier `.crt` ou `.pem`)
   </Step>
-  <Step title="Import des métadonnées SAML">
-    Importer les métadonnées SAML du fournisseur d'identité.
+  <Step title="Configuration back-office Serenest">
+    Serenest configure l'intégration SAML dans le back-office admin en utilisant les informations fournies par le tiers.
+  </Step>
+  <Step title="Configuration côté IdP">
+    Le tiers configure son IdP avec :
+    - L'ACS URL fournie par Serenest
+    - Le SP Entity ID (`serenest-sp` ou tel que spécifié)
+    - Les mappings d'attributs requis (`emailaddress`, `givenname`, `surname`, `name`)
+  </Step>
+  <Step title="Tests en pré-production">
+    Les deux parties testent l'intégration :
+    - Serenest crée un compte de test pour le tiers.
+    - Le tiers provisionne un compte de test dans son système pour Serenest.
+    - Vérification du flux de connexion de bout en bout en pré-production.
+  </Step>
+  <Step title="Mise en production">
+    Une fois le flux validé en pré-production, la configuration est répliquée en production.
   </Step>
 </Steps>
 
@@ -27,4 +55,4 @@ Une fois la configuration technique terminée, les tests suivants doivent être 
 | **Connexion automatique SSO** | Vérifier que l'utilisateur est connecté automatiquement via le SSO |
 | **Rechargement de badge** | Tester avec un montant réel et un montant de 0 |
 | **Webview** | Vérifier l'ouverture transparente sans connexion manuelle |
-| **Click & Collect** | Simuler une commande et un paiement |
+| **Nouvel utilisateur** | Vérifier le provisionnement automatique du compte |
