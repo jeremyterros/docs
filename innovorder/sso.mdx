@@ -1,0 +1,30 @@
+---
+title: SSO & Synchronisation du badge
+description: "Comportement du SSO et de la synchronisation du badge dans l'intégration Innovorder"
+icon: "key"
+---
+
+## Vérification de l'utilisateur lors de la connexion SSO
+
+Lors d'une connexion via SSO, Serenest vérifie l'adresse email de l'utilisateur.
+
+<Steps>
+  <Step title="Vérification de l'email">
+    Serenest contrôle que l'adresse email de l'utilisateur est bien présente dans la base de données Innovorder.
+  </Step>
+  <Step title="Validation ou blocage">
+    - **Email trouvé** : la connexion est validée, l'utilisateur accède à l'application.
+    - **Email introuvable** : la connexion est bloquée. L'utilisateur doit être ajouté dans la base Innovorder avant de pouvoir se connecter.
+  </Step>
+  <Step title="Synchronisation du badge">
+    Après validation, Serenest compare le badge enregistré dans sa base avec celui présent chez Innovorder. Si les deux badges sont différents, Serenest récupère et applique automatiquement le badge d'Innovorder.
+  </Step>
+</Steps>
+
+<Warning>
+  Si l'utilisateur n'est pas présent dans la base Innovorder, la connexion SSO sera **bloquée**. Il est impératif que tous les utilisateurs soient correctement importés côté Innovorder avant leur première connexion.
+</Warning>
+
+<Info>
+  La synchronisation du badge est automatique et transparente pour l'utilisateur. Elle garantit que le badge utilisé dans Serenest est toujours aligné avec celui d'Innovorder.
+</Info>

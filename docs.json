@@ -87,7 +87,8 @@
             "group": "Innovorder",
             "pages": [
               "innovorder/ouverture-site",
-              "innovorder/processus"
+              "innovorder/processus",
+              "innovorder/sso"
             ]
           }
         ]
