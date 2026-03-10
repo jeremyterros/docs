@@ -16,7 +16,7 @@ icon: "diagram-project"
 <Steps>
   <Step title="Serenest fournit les informations SP">
     Serenest communique au tiers :
-    - **ACS URL** : `https://api.serenest.fr/saml/acs/{siteUuid}`
+    - **ACS URL** : `https://app.serenest.fr/api/auth/sso/acs/{siteUuid}`
     - **SP Metadata URL** : `https://api.serenest.fr/saml/metadata/{siteUuid}`
     - **SP Entity ID** : `serenest-sp` (ou personnalisé si configuré)
   </Step>
@@ -51,7 +51,7 @@ icon: "diagram-project"
 Lorsqu'un utilisateur se connecte via l'IdP, celui-ci envoie une requête **POST** vers l'ACS URL :
 
 ```
-POST https://api.serenest.fr/saml/acs/{siteUuid}
+POST https://app.serenest.fr/api/auth/sso/acs/{siteUuid}
 Content-Type: application/x-www-form-urlencoded
 
 SAMLResponse=PHNhbWxwOlJlc3BvbnNlIC...base64...
