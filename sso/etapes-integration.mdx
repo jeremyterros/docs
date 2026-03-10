@@ -16,7 +16,7 @@ icon: "diagram-project"
 <Steps>
   <Step title="Serenest fournit les informations SP">
     Serenest communique au tiers :
-    - **ACS URL** : `https://app.serenest.fr/api/auth/sso/acs/{siteUuid}`
+    - **ACS URL** : `https://api.serenest.fr/saml/acs/{siteUuid}`
     - **SP Metadata URL** : `https://api.serenest.fr/saml/metadata/{siteUuid}`
     - **SP Entity ID** : `serenest-sp` (ou personnalisé si configuré)
   </Step>
@@ -31,9 +31,9 @@ icon: "diagram-project"
   </Step>
   <Step title="Configuration côté IdP">
     Le tiers configure son IdP avec :
-    - L'ACS URL fournie par Serenest
-    - Le SP Entity ID (`serenest-sp` ou tel que spécifié)
-    - Les mappings d'attributs requis (`emailaddress`, `givenname`, `surname`, `name`)
+    - L'**ACS URL** fournie par Serenest
+    - Le **SP Entity ID** (`serenest-sp` ou tel que spécifié)
+    - Les **mappings d'attributs** : `emailaddress`, `givenname`, `surname`, `name`, `badgenumber`
   </Step>
   <Step title="Tests en pré-production">
     Les deux parties testent l'intégration :
@@ -46,13 +46,36 @@ icon: "diagram-project"
   </Step>
 </Steps>
 
+## Exemple de requête SAML
+
+Lorsqu'un utilisateur se connecte via l'IdP, celui-ci envoie une requête **POST** vers l'ACS URL :
+
+```
+POST https://api.serenest.fr/saml/acs/{siteUuid}
+Content-Type: application/x-www-form-urlencoded
+
+SAMLResponse=PHNhbWxwOlJlc3BvbnNlIC...base64...
+```
+
+La `SAMLResponse` est un document XML signé (encodé en Base64) contenant les attributs de l'utilisateur. Une fois décodé et validé, Serenest extrait les attributs suivants :
+
+| Attribut SAML    | Description                                        |
+| ---------------- | -------------------------------------------------- |
+| `emailaddress`   | Email de l'utilisateur                             |
+| `givenname`      | Prénom                                             |
+| `surname`        | Nom de famille                                     |
+| `name`           | Nom complet (username)                             |
+| `badgenumber`    | Numéro de badge (peut déjà exister côté Serenest)  |
+
+> **Note :** Ces noms d'attributs sont les valeurs par défaut. Si l'IdP du tiers utilise des noms différents (ex: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`), Serenest peut configurer un mapping personnalisé dans les options avancées du back-office.
+
 ## Tests fonctionnels
 
 Une fois la configuration technique terminée, les tests suivants doivent être effectués :
 
-| Test | Description |
-| --- | --- |
-| **Connexion automatique SSO** | Vérifier que l'utilisateur est connecté automatiquement via le SSO |
-| **Rechargement de badge** | Tester avec un montant réel et un montant de 0 |
-| **Webview** | Vérifier l'ouverture transparente sans connexion manuelle |
-| **Nouvel utilisateur** | Vérifier le provisionnement automatique du compte |
+| Test                        | Description                                                        |
+| --------------------------- | ------------------------------------------------------------------ |
+| **Connexion automatique SSO**   | Vérifier que l'utilisateur est connecté automatiquement via le SSO |
+| **Rechargement de badge**       | Tester avec un montant réel et un montant de 0                     |
+| **Webview**                     | Vérifier l'ouverture transparente sans connexion manuelle          |
+| **Nouvel utilisateur**          | Vérifier le provisionnement automatique du compte                  |
