@@ -1,0 +1,172 @@
+---
+title: Onboarding Innovorder
+description: "Processus d'intégration des utilisateurs avec Innovorder"
+icon: "users-gear"
+---
+
+
+## Ouverture d'un nouveau site Innovorder
+
+### Statistiques et facturation
+
+- Côté ops Innovorder : création d'un compte de service API
+- Innovorder envoie à Serenest :
+  - Le **Brand ID** du nouveau site
+  - Le **JWT Secret**
+- Côté Terros — paramétrage du webhook dans les intégrations du back-office Innovorder
+- Serenest accède directement à la plateforme IAS pour créer le nouveau site en renseignant le Brand ID et le JWT Secret. Cela permet à la plateforme de se connecter directement aux données Innovorder. Rien de plus à faire au niveau des statistiques et de la facturation.
+
+### Application mobile
+
+- Création du site dans IAS ou dans le back-office Serenest (si le site est créé sur une plateforme, il est automatiquement créé dans l'autre)
+- Créer un utilisateur et un badge de test sur le nouveau site
+- Tester l'inscription via ce badge sur l'application mobile en sélectionnant le site correspondant
+- Tester le rechargement de badge
+
+## Processus étape par étape — ouverture site Innovorder
+
+<Steps>
+  <Step title="Création du compte de service API">
+    Innovorder crée le compte de service API.
+  </Step>
+  <Step title="Transmission des identifiants">
+    Innovorder envoie le **Brand ID** et le **JWT Secret** à Serenest.
+  </Step>
+  <Step title="Création du site">
+    Serenest crée le nouveau site dans IAS ou dans le back-office Serenest.
+  </Step>
+  <Step title="Configuration de la connexion">
+    Serenest renseigne le Brand ID et le JWT Secret dans les champs dédiés du site. La connexion passe au vert.
+  </Step>
+  <Step title="Paramétrage du webhook">
+    Serenest paramètre le webhook sur le nouveau site :
+
+    1. **Accéder à la configuration** : aller dans l'onglet "Intégration" du back-office Innovorder, descendre jusqu'à la section "Webhooks" et cliquer sur "+" pour ajouter un nouveau webhook.
+    2. **URL du webhook** à configurer selon l'environnement :
+
+    | Environnement | URL |
+    | --- | --- |
+    | Production Terros | `https://app-serenest-v2.terros.io/api/innovorder/webhook/order` |
+    | Production Serenest | `https://admin.app.serenest.fr/api/innovorder/webhook/order` |
+
+    <Info>
+      Se référer à la configuration du site Front Office comme exemple de paramétrage.
+    </Info>
+  </Step>
+  <Step title="Prêt à recevoir les données">
+    Serenest est prêt à récupérer les données Innovorder. L'URL de rechargement dans l'app mobile pointe désormais vers Innovorder.
+  </Step>
+  <Step title="Import des utilisateurs">
+    Serenest récupère les noms, prénoms, badges et emails des utilisateurs du site. Deux options :
+
+    - **Option A** — Le fichier est fourni par le client. Serenest le transmet à Innovorder pour import dans leur base de données.
+    - **Option B** — Le fichier est déposé automatiquement sur un serveur. Serenest le récupère et l'envoie à Innovorder. Dans ce cas, le manager de site Serenest met à jour le fichier manuellement au démarrage du projet.
+  </Step>
+  <Step title="Confirmation d'import">
+    Innovorder confirme à Serenest que le fichier a bien été importé dans leur base de données avec succès.
+  </Step>
+  <Step title="Badge de test">
+    Innovorder fournit un badge de test à Serenest.
+  </Step>
+  <Step title="Inscription des utilisateurs">
+    Inscription / connexion des utilisateurs à l'application mobile Serenest. Deux scénarios :
+
+    - **Utilisateurs sans compte Serenest** : ils peuvent s'inscrire directement dans l'app avec leur badge en choisissant le site.
+    - **Utilisateurs avec un compte Serenest existant** : envoyer l'ensemble des emails à Innovorder pour qu'ils importent les adresses et attribuent les badges correspondants. Une fois fait, les utilisateurs peuvent se connecter avec leur nouveau badge.
+  </Step>
+  <Step title="Tests avec le badge de test">
+    Une fois le badge de test en main, le testeur Serenest doit :
+
+    - Vérifier le parcours dans l'app et le rendu des paramètres configurés dans le back-office
+    - Cliquer sur **Recharger mon badge** et vérifier la redirection vers Innovorder
+    - Effectuer un rechargement test du montant de son choix
+    - Vérifier que le badge est bien crédité
+    - Reproduire les tests avec d'autres badges si nécessaire
+  </Step>
+  <Step title="Validation et lancement">
+    Une fois toutes ces étapes validées, le nouveau site est prêt à être lancé. Serenest envoie un email en masse aux convives pour les informer qu'ils peuvent télécharger l'app afin de consulter et recharger leur badge et accéder aux menus.
+  </Step>
+</Steps>
+
+## Import des convives
+
+Serenest reçoit un fichier contenant :
+
+- Nom
+- Prénom
+- Email **ou**
+- Badge
+
+Ce fichier est intégré dans les systèmes Innovorder. Un email de masse est envoyé aux convives pour qu'ils puissent installer l'application et s'inscrire.
+
+## Vérification et correspondance avec Innovorder
+
+Pour chaque inscription, l'application compare les données saisies par l'utilisateur avec les données existantes dans Innovorder :
+
+- **Le badge ou l'email correspond au site indiqué** : inscription validée, compte lié à Innovorder.
+- **Le badge ou l'email ne correspond pas au site** :
+  - Inscription bloquée
+  - Pop-up demandant à l'utilisateur de contacter le responsable du site
+
+### Email
+
+- Utilisé pour l'authentification et la communication (notifications, réinitialisation du mot de passe, informations convives).
+- Si l'email de l'application diffère de celui dans Innovorder :
+  - Un nouveau compte est créé dans le back-office Serenest
+  - Le badge et l'email saisis sont liés
+  - L'utilisateur **n'est pas** bloqué
+
+### Synchronisation du badge
+
+Si le badge d'un utilisateur est mis à jour côté Innovorder et que son email est **strictement identique** dans les deux systèmes (Innovorder et Serenest), le nouveau badge sera automatiquement synchronisé sur son profil lors de sa prochaine connexion, à condition que l'ancien badge ne soit plus valide.
+
+<Warning>
+  **L'email est la condition indispensable à la synchronisation automatique des badges.**
+
+  Lorsque les numéros de badge diffèrent entre Innovorder et Serenest, la mise à jour automatique ne peut s'effectuer que si l'adresse email est rigoureusement identique dans les deux systèmes. En cas de discordance, la synchronisation n'aura pas lieu et l'utilisateur ne pourra pas se connecter à l'application.
+
+  Dans cette situation, il est nécessaire de corriger manuellement l'adresse email dans l'un des deux systèmes avant toute nouvelle tentative de connexion.
+</Warning>
+
+## Processus d'inscription
+
+### Avec SSO
+
+**Utilisateur déjà dans Serenest :**
+- Connexion avec le compte existant
+- Mise à jour des informations de site et d'entreprise
+- Accès refusé si le rôle est *manager* ou *admin*
+- Prénom et nom mis à jour
+- Mot de passe réinitialisé (non nécessaire avec le SSO)
+
+**Nouvel utilisateur Serenest :**
+- Création de compte avec les informations du SSO (prénom, nom, site, entreprise)
+
+**Correspondance avec Innovorder :**
+
+| Données disponibles | Comportement |
+| --- | --- |
+| Avec email | Recherche du compte Innovorder et mise à jour du badge |
+| Avec badge | Recherche du compte Innovorder par badge et récupération de l'email |
+| Sans email | Récupération via le badge |
+| Sans email et sans badge | Impossible, le compte n'existe pas dans Innovorder |
+| Sans badge | Impossible, tous les comptes Innovorder ont un badge |
+
+### Sans SSO
+
+**Inscription manuelle :**
+- L'utilisateur clique sur *Créer un compte*
+- Vérification que le badge correspond au site indiqué
+- L'utilisateur est automatiquement lié à l'entreprise correspondant au site
+
+## Comparaison PI vs Innovorder
+
+| Sujet | PI | Innovorder |
+| --- | --- | --- |
+| Vérification d'identité | Badge uniquement | Badge **OU** email |
+| Email différent | Bloquant | Nouveau compte créé |
+| Import | Tous les champs requis | Email **ou** badge |
+
+<Info>
+  Innovorder fonctionne comme PI, à une différence majeure près : la vérification accepte **l'email OU le badge**, et non le badge uniquement.
+</Info>

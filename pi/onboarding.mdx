@@ -1,0 +1,75 @@
+---
+title: Onboarding PI Electronique
+description: "Processus d'intégration des utilisateurs avec PI Electronique"
+icon: "user-plus"
+---
+
+## Import des convives
+
+Serenest reçoit un fichier contenant :
+
+- Nom
+- Prénom
+- Email
+- Badge
+
+Ce fichier est intégré dans les systèmes PI. Un email de masse est envoyé aux convives pour qu'ils puissent installer l'application et s'inscrire en remplissant les champs requis (nom, prénom, email, badge).
+
+## Vérification et correspondance avec PI
+
+Pour chaque inscription, l'application compare les données saisies par l'utilisateur avec les données existantes dans PI :
+
+- **Le badge correspond au site indiqué** : inscription validée, compte lié à PI.
+- **Le badge ne correspond pas au site** :
+  - Inscription bloquée
+  - Pop-up demandant à l'utilisateur de contacter le responsable du site
+
+### Email
+
+Utilisé pour l'authentification et la communication (notifications, réinitialisation du mot de passe, informations convives).
+
+### Logique de badge
+
+Lorsqu'un utilisateur tente de se connecter avec un **badge de site**, le système applique la logique suivante :
+
+| Scénario | Comportement |
+| --- | --- |
+| Aucun compte associé au badge | Un **nouveau compte est automatiquement créé** |
+| Compte existant sans email | L'email saisi est **attribué à ce compte** qui devient le compte principal |
+| Compte existant avec un email différent | Une **erreur est retournée**, indiquant que le badge est déjà associé à un autre compte |
+
+## Processus d'inscription
+
+### Avec SSO
+
+**Utilisateur déjà dans Serenest :**
+- Connexion avec le compte existant
+- Mise à jour des informations de site et d'entreprise
+- Accès refusé si le rôle est *manager* ou *admin*
+- Prénom et nom mis à jour
+- Mot de passe réinitialisé (non nécessaire avec le SSO)
+
+**Nouvel utilisateur Serenest :**
+- Création de compte avec les informations du SSO (prénom, nom, site, entreprise)
+
+**Correspondance avec PI :**
+
+| Données disponibles | Comportement |
+| --- | --- |
+| Avec email | Recherche du compte PI et mise à jour du badge |
+| Avec badge | Recherche du compte PI par badge et récupération de l'email |
+| SSO avec email et badge | Si l'email n'existe pas, création d'un nouveau compte (sans vérifier le badge). Si l'email existe, vérification du site et de l'identité de l'utilisateur |
+| Sans email | Récupération via le badge (protection = identifiant SSO du site — UUID) |
+| Sans email et sans badge | Impossible, le compte n'existe pas dans PI |
+| Sans badge | Impossible, tous les comptes PI ont un badge |
+
+<Info>
+  L'adresse email est utilisée côté Serenest pour créer le compte, se connecter et vérifier si le compte existe déjà.
+</Info>
+
+### Sans SSO
+
+**Inscription manuelle :**
+- L'utilisateur clique sur *Créer un compte*
+- Vérification que le badge correspond au site indiqué
+- L'utilisateur est automatiquement lié à l'entreprise correspondant au site

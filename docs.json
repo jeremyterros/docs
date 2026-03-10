@@ -47,13 +47,6 @@
             ]
           },
           {
-            "group": "Onboarding utilisateurs",
-            "pages": [
-              "onboarding/pi",
-              "onboarding/innovorder"
-            ]
-          },
-          {
             "group": "FAQ",
             "pages": ["faq"]
           }
@@ -81,6 +74,17 @@
         ]
       },
       {
+        "tab": "PI Electronique",
+        "groups": [
+          {
+            "group": "PI Electronique",
+            "pages": [
+              "pi/onboarding"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Innovorder",
         "groups": [
           {
@@ -88,6 +92,7 @@
             "pages": [
               "innovorder/ouverture-site",
               "innovorder/processus",
+              "innovorder/onboarding",
               "innovorder/sso"
             ]
           }
